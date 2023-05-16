@@ -10,19 +10,23 @@ class DataSeriesCapture {
         if( !this.isLocked && num >= 0 ) {
             this.dataSeries.push(num);
         } else {
-            return {msg: "error: method, add( ), cannot be called on a locked data series, or negative integers."};
+            return {msg: "error: method, .add( ), cannot be called on a locked data series, or negative integers."};
         }
 
         return 1;
     }
 
     between( x, y ) {
+        if( !this.dataSeries.length ) {
+            return {msg: "error: method, .between( ), cannot be called on dataSeries of length null."};
+        }
+
         let count = 0;
         if( !this.isLocked ) {
             this.isLocked = true;
         }
 
-        for( let i = 0; i < this.dataSeries.length(); i++ ) {
+        for( let i = 0; i < this.dataSeries.length; i++ ) {
             if( x <= this.dataSeries[i] <= y ) {
                 ++count;
             }
@@ -32,7 +36,9 @@ class DataSeriesCapture {
     }
 
     build_stats() {
-        this.isLocked = true;
+        if(!this.isLocked) {
+            this.isLocked = true;
+        }
     }
 
     read_pressue_from_csv(filename) {
