@@ -1,0 +1,28 @@
+{
+  "name": "sea-bird-challenge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agtTwilight/Sea-Bird-Challenge.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/agtTwilight/Sea-Bird-Challenge/issues"
+  },
+  "homepage": "https://github.com/agtTwilight/Sea-Bird-Challenge#readme",
+  "dependencies": {
+    "inquirer": "^9.2.3",
+    "papaparse": "^5.4.1"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0"
+  }
+}
