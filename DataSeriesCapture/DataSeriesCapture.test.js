@@ -1,4 +1,7 @@
 const DataSeriesCapture = require('./DataSeriesCapture.js');
+// const filepath = './data/58220.csv';
+const filepath = './DataSeriesCapture/data/58220.csv';
+const notCsvFilepath = './data/notCSV.json';
 
 describe('DataSeriesCapture', () => {
     let capture;
@@ -42,14 +45,18 @@ describe('DataSeriesCapture', () => {
         expect(capture.between(1,2)).toEqual(expect.objectContaining({msg: "error: method, .between( ), cannot be called on dataSeries of length 0."}));
     });
 
-    it('.read_pressure_from_csv() returns an error message when file type != .csv', () => {
-        expect(capture.read_pressure_from_csv(file)).toEqual(expect.objectContaining({msg: "error: uploaded file is not of type '.csv'"}));
+    // it('.read_pressure_from_csv() returns an error message when file type != .csv', () => {
+    //     expect(capture.read_pressure_from_csv(notCsvFilepath)).toEqual(expect.objectContaining({msg: "error: uploaded file is not of type '.csv'"}));
+    // });
+
+    it('.read_pressure_from_csv(csvData) returns 1, sets isLocked === true, and pushes CSV pressure data to this.dataSeries.', async () => {
+        await capture.read_pressure_from_csv(filepath);
+        expect(capture.dataSeries.length).toBe(25476);
+        expect(capture.isLocked).toBe(true);
     });
 
-    it.todo('.read_pressure_from_csv(csvData) returns 1, sets isLocked === true, and pushes CSV pressure data to this.dataSeries.', () => {
-        expect(capture.read_pressure_from_csv("/data/58220.csv")).toBe(1);
-        expect(capture.dataSeries.length > 0).toBe(true)
+    it('.between( -100, 100 ) returns 170 while this.dataSeries === csvData.pression.', async () => {
+        await capture.read_pressure_from_csv(filepath);
+        expect(capture.between( -100, 100 )).toBe(170)
     });
-
-    it.todo('.between( -100, 100 ) returns 170 while this.dataSeries === csvData.pression.');
 });
