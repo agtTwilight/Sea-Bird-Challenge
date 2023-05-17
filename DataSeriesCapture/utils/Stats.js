@@ -28,6 +28,10 @@ class Stats {
     }
 
     getDailyStats() {
+        if(!this.dataSeries.dailyStats) {
+            return {msg: "error: method, .getDailyStats, cannot be called on non-CSV data sets."}
+        }
+
         const data = this.dataSeries.dailyData;
         const keyArr = Object.keys(data);
         const dailyStats = {};

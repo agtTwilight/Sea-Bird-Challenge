@@ -9,7 +9,11 @@ class DataSeriesCapture {
     }
 
     add( num ) {
-        if( !this.isCSV || num >= 0 ) {
+        if( this.dataSeries === undefined ) {
+            this.dataSeries = [];
+        }
+        
+        if( !this.isCSV) {
             this.dataSeries.push(num);
         } else {
             return {msg: "error: method, .add( ), cannot be called on CSV data, or negative integers."};
@@ -24,7 +28,7 @@ class DataSeriesCapture {
         // Verify that dataSeries exists before building stats
         if(this.isCSV) {
             data = this.dataSeries.pressureData;
-        } else if (this.dataSeries.length) {
+        } else if (this.dataSeries !== undefined) {
             data = this.dataSeries;
         } else {
             return {msg: "error: method, build_stats( ), cannot be called on dataSeries of length 0."};
