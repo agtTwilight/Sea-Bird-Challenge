@@ -1,12 +1,12 @@
 class Stats {
     constructor( dataSeries, isCSV, mean, min, max ) {
-        // TODO cannot include SD and keep build_stats to O(n)...provide func in stats to build daily statistics for a csv file.
         this.dataSeries = dataSeries;
         this.isCSV = isCSV;
         this.mean = mean
         this.min = min;
         this.max = max;
     }
+
     between( x, y ) {
         let count = 0;
         let data;
@@ -25,6 +25,45 @@ class Stats {
         };
 
         return count;
+    }
+
+    getDailyStats() {
+        const data = this.dataSeries.dailyData;
+        const keyArr = Object.keys(data);
+        const dailyStats = {};
+
+        // Loop through each key in the dailyData array
+        keyArr.forEach(key => {
+            let keyData = data[key];
+            let sum = 0;
+            let min = keyData[0];
+            let max = keyData[0];
+
+            // Get mean, min, and max for each day
+            for( let i = 0; i < keyData.length; i++ ) {
+                if( min > keyData[i] ) min = keyData[i];
+                if( max < keyData[i] ) max = keyData[i];
+                sum += keyData[i];
+            }
+
+            const mean = sum/keyData.length;
+
+            // Get standard deviation for each day
+            let stdevSum = 0;
+            for( let i = 0; i < keyData.length; i++ ) {
+                stdevSum += (keyData[i] - mean ) ** 2;
+            }
+
+            const stdev = Math.sqrt( stdevSum/keyData.length );
+            dailyStats[key] = {
+                mean,
+                min,
+                max,
+                stdev
+            };
+        })
+
+        return dailyStats;
     }
 }
 
