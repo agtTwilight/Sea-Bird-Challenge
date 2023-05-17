@@ -7,7 +7,7 @@ let capture = new DataSeriesCapture;
 const test = async () => {
     await capture.read_pressure_from_csv(filepath);
     const stats = capture.build_stats();
-    stats.getDailyStats();
+    console.log(stats.getDailyStats());
     // console.log(stats);
     // console.log(capture.dataSeries.dailyData);
     // console.log(capture.between( -100, 100 ));
