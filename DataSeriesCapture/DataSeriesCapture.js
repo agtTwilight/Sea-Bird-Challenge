@@ -1,56 +1,60 @@
 const Papa = require('papaparse');
+const Stats = require('./utils/Stats.js');
 const fs = require('fs');
 
 class DataSeriesCapture {
     constructor() {
-        this.dataSeries = [];
-        this.isLocked = false;
+        this.dataSeries;
+        this.isCSV = false;
     }
 
     add( num ) {
-        if( !this.isLocked && num >= 0 ) {
+        if( !this.isCSV || num >= 0 ) {
             this.dataSeries.push(num);
         } else {
-            return {msg: "error: method, .add( ), cannot be called on a locked data series, or negative integers."};
+            return {msg: "error: method, .add( ), cannot be called on CSV data, or negative integers."};
         }
 
         return 1;
     }
 
-    between( x, y ) {
-        if( !this.dataSeries.length ) {
-            return {msg: "error: method, .between( ), cannot be called on dataSeries of length 0."};
-        }
-
-        let count = 0;
-        if( !this.isLocked ) {
-            this.isLocked = true;
-        }
-
-        for( let i = 0; i < this.dataSeries.length; i++ ) {
-            if( x <= this.dataSeries[i] && this.dataSeries[i] <= y ) {
-                ++count;
-            }
-        };
-
-        return count;
-    }
-
     build_stats() {
-        if(!this.isLocked) {
-            this.isLocked = true;
+        let data; 
+
+        // Verify that dataSeries exists before building stats
+        if(this.isCSV) {
+            data = this.dataSeries.pressureData;
+        } else if (this.dataSeries.length) {
+            data = this.dataSeries;
+        } else {
+            return {msg: "error: method, build_stats( ), cannot be called on dataSeries of length 0."};
         }
+
+        let sum = 0;
+        let min = data[0];
+        let max = data[0];
+
+        for( let i = 0; i < data.length; i++ ) {
+            if( min > data[i] ) min = data[i];
+            if(max < data[i]) max = data[i];
+            sum += data[i];
+        }
+
+        const mean = sum/data.length;
+        const stats = new Stats(this.dataSeries, this.isCSV, mean, min, max);
+        return stats;
     }
 
     async read_pressure_from_csv(filepath) {
         try {
+            // TODO returns a promise. Create handleErr function and pass desired msg text.
             if( filepath.slice(-4) !== ".csv" ) {
                 console.error({msg: "error: uploaded file is not of type '.csv'"});
             }
     
             // Parse CSV to JSON and append pressure data to this.dataSeries
             this.dataSeries = await this.toJson(filepath);
-            this.isLocked = true;
+            this.isCSV = true;
         } catch (error) {
             console.error(error);
         }
@@ -63,13 +67,21 @@ class DataSeriesCapture {
             Papa.parse( file, {
                 delimiter: ";",
                 skipEmptyLines: true,
+                dynamicTyping: true,
                 complete: (results) => {
                     const rows = results.data;
                     const pressureData = [];
+                    const dailyData = {};
+                    let date;
                     for ( let i = 3; i < rows.length; i++ ) {
+                        if( date !== rows[i][0] ) {
+                            date = rows[i][0];
+                            dailyData[date] = [];
+                        }
+                        dailyData[date].push(rows[i][4]);
                         pressureData.push(rows[i][4]);
                     }
-                    resolve(pressureData);
+                    resolve({pressureData, dailyData});
                 },
                 error (err, file) {
                     reject(err);
