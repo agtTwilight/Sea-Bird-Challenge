@@ -5,14 +5,9 @@ const notCsvFilepath = './data/notCSV.json';
 let capture = new DataSeriesCapture;
 
 const test = async () => {
-    capture.add(1);
-    capture.add(2);
-    capture.add(3);
+    await capture.read_pressure_from_csv(filepath);
     const stats = capture.build_stats();
-    console.log(stats)
-    // await capture.read_pressure_from_csv(filepath);
-    // const stats = capture.build_stats();
-    // console.log(stats.getDailyStats());
+    console.log(stats.getDailyStats());
     // console.log(stats);
     // console.log(capture.dataSeries.dailyData);
     // console.log(capture.between( -100, 100 ));

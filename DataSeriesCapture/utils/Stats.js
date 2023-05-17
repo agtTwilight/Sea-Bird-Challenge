@@ -28,7 +28,7 @@ class Stats {
     }
 
     getDailyStats() {
-        if(!this.dataSeries.dailyStats) {
+        if(!this.isCSV) {
             return {msg: "error: method, .getDailyStats, cannot be called on non-CSV data sets."}
         }
 
