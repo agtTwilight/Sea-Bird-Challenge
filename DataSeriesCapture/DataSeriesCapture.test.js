@@ -1,5 +1,4 @@
 const DataSeriesCapture = require('./DataSeriesCapture.js');
-// const filepath = './data/58220.csv';
 const filepath = './DataSeriesCapture/data/58220.csv';
 const notCsvFilepath = './data/notCSV.json';
 
