@@ -36,7 +36,7 @@ class DataSeriesCapture {
 
         for( let i = 0; i < data.length; i++ ) {
             if( min > data[i] ) min = data[i];
-            if(max < data[i]) max = data[i];
+            if( max < data[i] ) max = data[i];
             sum += data[i];
         }
 
