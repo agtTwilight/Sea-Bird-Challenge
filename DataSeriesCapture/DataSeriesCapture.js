@@ -1,4 +1,5 @@
 const Papa = require('papaparse');
+const fs = require('fs');
 
 class DataSeriesCapture {
     constructor() {
@@ -18,7 +19,7 @@ class DataSeriesCapture {
 
     between( x, y ) {
         if( !this.dataSeries.length ) {
-            return {msg: "error: method, .between( ), cannot be called on dataSeries of length null."};
+            return {msg: "error: method, .between( ), cannot be called on dataSeries of length 0."};
         }
 
         let count = 0;
@@ -27,7 +28,7 @@ class DataSeriesCapture {
         }
 
         for( let i = 0; i < this.dataSeries.length; i++ ) {
-            if( x <= this.dataSeries[i] <= y ) {
+            if( x <= this.dataSeries[i] && this.dataSeries[i] <= y ) {
                 ++count;
             }
         };
@@ -41,25 +42,41 @@ class DataSeriesCapture {
         }
     }
 
-    read_pressue_from_csv(filename) {
-        // TODO: compare time complexity of regex vs .includes() vs .slice()
-        if( !filename.slice(-4) === ".csv" ) {
-            return {msg: "error: uploaded file is not of type '.csv'"};
-        }
-
-        // Parse CSV to JSON and append pressure data to this.dataSeries
-        Papa.parse( __dirname + filename, {
-            header: true,
-            skipEmptyLines: true,
-            complete: function(results) {
-                for( let i = 0; i < results.data.length; i++ ) {
-                    this.dataSeries.push(results.data[i].PRESSION);
-                }
-
-                this.isLocked = true;
+    async read_pressure_from_csv(filepath) {
+        try {
+            if( filepath.slice(-4) !== ".csv" ) {
+                console.error({msg: "error: uploaded file is not of type '.csv'"});
             }
-        })
+    
+            // Parse CSV to JSON and append pressure data to this.dataSeries
+            this.dataSeries = await this.toJson(filepath);
+            this.isLocked = true;
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
-        return 1;
+    toJson( filepath ) {
+        // create file readstream for papaparse
+        const file = fs.createReadStream(filepath)
+        return new Promise((resolve, reject) => {
+            Papa.parse( file, {
+                delimiter: ";",
+                skipEmptyLines: true,
+                complete: (results) => {
+                    const rows = results.data;
+                    const pressureData = [];
+                    for ( let i = 3; i < rows.length; i++ ) {
+                        pressureData.push(rows[i][4]);
+                    }
+                    resolve(pressureData);
+                },
+                error (err, file) {
+                    reject(err);
+                }
+            })
+        })
     }
 }
+
+module.exports = DataSeriesCapture;
