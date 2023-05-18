@@ -1,0 +1,17 @@
+header {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    top: 0;
+}
+
+header * {
+    margin: 1rem 2rem;
+}
+
+#help {
+    height: 3rem;
+    width: 3rem;
+}
