@@ -1,6 +1,14 @@
+.visible {
+    display: block;
+}
+
+.hidden {
+    display: none !important;
+}
+
 #main {
     position: relative;
-    width: 50vw;
+    min-width: 750px;
     height: 50vh;
     border: solid 1px black;
 }
