@@ -1,5 +1,5 @@
 const Papa = require('papaparse');
-const Stats = require('./utils/Stats.js');
+const Stats = require('./Stats.js');
 const fs = require('fs');
 
 class DataSeriesCapture {
@@ -49,7 +49,7 @@ class DataSeriesCapture {
         return stats;
     }
 
-    async read_pressure_from_csv(filepath) {
+    async read_pressure_from_csv( filepath, isDownload ) {
         try {    
             // Parse CSV to JSON and append pressure data to this.dataSeries
             this.dataSeries = await this.toJson(filepath);
@@ -59,11 +59,13 @@ class DataSeriesCapture {
         }
     }
 
-    toJson( filepath ) {
+    // isDownload is passed for testing in node.js ... isn't required for production. All CSV files from the front-end are be treated as downloads by papaparse, but I included it here to keep allow my node test script to stay passing.
+    toJson( filepath, isDownload ) {
         // create file readstream for papaparse
         const file = fs.createReadStream(filepath)
         return new Promise((resolve, reject) => {
             Papa.parse( file, {
+                download: isDownload,
                 delimiter: ";",
                 skipEmptyLines: true,
                 dynamicTyping: true,
