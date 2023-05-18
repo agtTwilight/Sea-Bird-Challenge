@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/agtTwilight/Sea-Bird-Challenge#readme",
   "dependencies": {
-    "inquirer": "^9.2.3",
     "papaparse": "^5.4.1"
   },
   "devDependencies": {
