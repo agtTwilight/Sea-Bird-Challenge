@@ -1,6 +1,5 @@
 const DataSeriesCapture = require('./DataSeriesCapture.js');
-const filepath = './DataSeriesCapture/data/58220.csv';
-const notCsvFilepath = './data/notCSV.json';
+const filepath = './src/data/test.csv';
 
 describe('DataSeriesCapture', () => {
     let capture;
@@ -50,13 +49,13 @@ describe('DataSeriesCapture', () => {
     });
 
     it('.read_pressure_from_csv(filepath) sets isCSV === true, and pushes CSV pressure data to this.dataSeries.', async () => {
-        await capture.read_pressure_from_csv(filepath);
+        await capture.read_pressure_from_csv(filepath, false);
         expect(capture.dataSeries === undefined).toBe(false);
         expect(capture.isCSV).toBe(true);
     });
 
     it('can initialize basic statistics (mean, min, max) using the .build_stats( ) method on CSV data', async () => {
-        await capture.read_pressure_from_csv(filepath);
+        await capture.read_pressure_from_csv(filepath, false);
         const stats = capture.build_stats();
         expect(stats.mean).toBe(1711.3335212356392);
         expect(stats.min).toBe(-1.517);
@@ -64,13 +63,13 @@ describe('DataSeriesCapture', () => {
     })
 
     it('.between( -100, 100 ) returns 170 while this.dataSeries === csvData.pression.', async () => {
-        await capture.read_pressure_from_csv(filepath);
+        await capture.read_pressure_from_csv(filepath, false);
         const stats = capture.build_stats();
         expect(stats.between( -100, 100 )).toBe(170)
     });
 
     it('can return basic statistics (mean, min, max) and standard deviation for CSV data seperated by day.', async () => {
-        await capture.read_pressure_from_csv(filepath);
+        await capture.read_pressure_from_csv(filepath, false);
         const stats = capture.build_stats();
         stats.getDailyStats();
         
