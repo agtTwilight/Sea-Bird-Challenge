@@ -67,7 +67,7 @@ class Stats {
             };
         })
 
-        return dailyStats;
+        this.dataSeries["dailyStats"] = dailyStats;
     }
 }
 

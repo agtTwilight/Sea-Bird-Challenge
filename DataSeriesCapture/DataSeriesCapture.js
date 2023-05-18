@@ -50,12 +50,7 @@ class DataSeriesCapture {
     }
 
     async read_pressure_from_csv(filepath) {
-        try {
-            // TODO returns a promise. Create handleErr function and pass desired msg text.
-            if( filepath.slice(-4) !== ".csv" ) {
-                console.error({msg: "error: uploaded file is not of type '.csv'"});
-            }
-    
+        try {    
             // Parse CSV to JSON and append pressure data to this.dataSeries
             this.dataSeries = await this.toJson(filepath);
             this.isCSV = true;
