@@ -34,7 +34,7 @@ Cloning the repository:
 5. Run the following command: `git clone <insert-sshkey-here>`.
 
 Working with Node.js:
-1. Run the following command to load the correct branch: `git checkout -b dataSeriesCapture/Stats`.
+1. Run the following command to load the correct branch: `git checkout dataSeriesCapture/Stats`.
 2. Install package dependencies with the following command: `npm i`.
 3. To run Jest tests execute the following: `npm run test`. Note that `--watchall` and `--verbose` are enabled with the dev dependency, so you will have to exit your terminal or hit `Ctrl + C`.
 
