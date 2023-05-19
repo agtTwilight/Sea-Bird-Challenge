@@ -1,12 +1,13 @@
 import {
     Chart as ChartJS,
-    BarElement,
+    LineElement,
     CategoryScale,
     LinearScale,
+    Legend,
     Tooltip,
-    Legend
+    PointElement
 } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import React, 
     { useState,
     useEffect } from 'react';
@@ -15,7 +16,7 @@ import './style.css';
 export const ViewData = (props) => {
     const [stats, setStats] = useState(null);
     const [statsView, setStatsView] = useState(null);
-    const [barChart, setBarChart] = useState(null);
+    const [lineChart, setLineChart] = useState(null);
     const [buildGraphs, setBuildGraphs] = useState(false);
     const[chartCount, setChartCount] = useState(0);
 
@@ -35,7 +36,7 @@ export const ViewData = (props) => {
 
     useEffect(() => {
         if(buildGraphs) {
-            setBarChart(handleBarCharts());
+            setLineChart(handleLineCharts());
         }
     }, [buildGraphs, chartCount])
 
@@ -77,13 +78,14 @@ export const ViewData = (props) => {
         }
     }
 
-    const handleBarCharts = () => {
+    const handleLineCharts = () => {
         ChartJS.register(
-            BarElement,
+            LineElement,
             CategoryScale,
             LinearScale,
+            Legend,
             Tooltip,
-            Legend
+            PointElement
         )
 
         let keys = Object.keys(stats.dataSeries.dailyStats);
@@ -99,24 +101,31 @@ export const ViewData = (props) => {
                     }),
                     backgroundColor: 'aqua',
                     borderColor: "black",
-                    borderWidth: 1,
+                    pointBorderColor: "aqua"
                 }
             ]
         };
 
         console.log(data)
 
-        const options = {}
+        const options = {
+            scales: {
+                y: {
+                    min: -200,
+                    max: 1800,
+                }
+            }
+        }
 
         return <section id='chart'>
             <section>
                 <p id='backward' onClick={chartBackward}>back</p>
                 <p id='forward' onClick={chartForward}>forward</p>
             </section>
-            <Bar
+            <Line
         data = {data}
         options = {options}
-        ></Bar></section>
+        ></Line></section>
     }
 
     const chartBackward = () => {
@@ -132,7 +141,7 @@ export const ViewData = (props) => {
   return (
     <div id='view-data'>
         {
-            buildGraphs ? barChart : <></>
+            buildGraphs ? lineChart : <></>
         }
         {
         stats ? statsView  : <></>
