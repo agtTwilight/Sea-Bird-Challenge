@@ -90,4 +90,4 @@ class DataSeriesCapture {
     }
 }
 
-module.exports = DataSeriesCapture;
+export default DataSeriesCapture;
