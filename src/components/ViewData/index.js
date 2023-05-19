@@ -1,11 +1,23 @@
+import {
+    Chart as ChartJS,
+    BarElement,
+    CategoryScale,
+    LinearScale,
+    Tooltip,
+    Legend
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 import React, 
     { useState,
-    useEffect } from 'react'
-import './style.css'
+    useEffect } from 'react';
+import './style.css';
 
 export const ViewData = (props) => {
     const [stats, setStats] = useState(null);
     const [statsView, setStatsView] = useState(null);
+    const [barChart, setBarChart] = useState(null);
+    const [buildGraphs, setBuildGraphs] = useState(false);
+    const[chartCount, setChartCount] = useState(0);
 
     useEffect(() => {
         console.log(stats);
@@ -21,10 +33,17 @@ export const ViewData = (props) => {
         }
     }, [stats])
 
+    useEffect(() => {
+        if(buildGraphs) {
+            setBarChart(handleBarCharts());
+        }
+    }, [buildGraphs, chartCount])
+
     const handleMethodClick = (e) => {
         const method = e.target.innerText;
         if( method === "add" ) {
             if( document.querySelector("#add-input").value ) {
+                // TODO render arrary
                 props.capture.add( +document.querySelector("#add-input").value);
                 props.setMethods(["add", "build_stats"]);
             }
@@ -42,13 +61,79 @@ export const ViewData = (props) => {
                 // TODO render results
                 console.log(stats.between( +document.querySelector("#between-lower-limit").value, +document.querySelector("#between-upper-limit").value ));
             }
+        } else if( method === "getDailyStats") {
+            document.querySelector("#stats-data").setAttribute("style", "display: none;");
+            stats.getDailyStats();
+            setBuildGraphs(true);
+            props.setMethods(["between", "hideGraph"]);
+        } else if ( method === "hideGraph" ) {
+            props.setMethods(["between", "showGraph"]);
+            document.querySelector("#stats-data").setAttribute("style", "display: block;");
+            document.querySelector("#chart").setAttribute("style", "display: none;");
         } else {
-            // by default, has to be getDailyStats() ... run
+            props.setMethods(["between", "hideGraph"]);
+            document.querySelector("#stats-data").setAttribute("style", "display: none;");
+            document.querySelector("#chart").setAttribute("style", "display: block;");
         }
+    }
+
+    const handleBarCharts = () => {
+        ChartJS.register(
+            BarElement,
+            CategoryScale,
+            LinearScale,
+            Tooltip,
+            Legend
+        )
+
+        let keys = Object.keys(stats.dataSeries.dailyStats);
+        keys = keys.slice(0+ (chartCount*7) ,7 + (chartCount*7))
+
+        const data = {
+            labels: keys,
+            datasets: [
+                {
+                    label: "mean daily pressure",
+                    data: keys.map(key => {
+                        return stats.dataSeries.dailyStats[key].mean;
+                    }),
+                    backgroundColor: 'aqua',
+                    borderColor: "black",
+                    borderWidth: 1,
+                }
+            ]
+        };
+
+        console.log(data)
+
+        const options = {}
+
+        return <section id='chart'>
+            <section>
+                <p id='backward' onClick={chartBackward}>back</p>
+                <p id='forward' onClick={chartForward}>forward</p>
+            </section>
+            <Bar
+        data = {data}
+        options = {options}
+        ></Bar></section>
+    }
+
+    const chartBackward = () => {
+        if(chartCount !== 0) {
+            setChartCount(chartCount-1);
+        }
+    }
+
+    const chartForward = () => {
+        setChartCount(chartCount +1)
     }
 
   return (
     <div id='view-data'>
+        {
+            buildGraphs ? barChart : <></>
+        }
         {
         stats ? statsView  : <></>
         }

@@ -1,4 +1,5 @@
 #view-data input {
+    position: relative;
     max-width: 30px;
 }
 
@@ -6,7 +7,25 @@
     position: absolute;
     margin-left: 1rem;
     text-align: left;
-    width: 550px;
+    width: 600px;
+}
+
+#chart {
+    position: absolute;
+    bottom: 1rem;
+    box-sizing: border-box; 
+    height: fit-content;
+    width: 600px;
+    z-index: 2;
+}
+
+#chart section {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#chart p:hover {
+    cursor: pointer;
 }
 
 #executable-methods {

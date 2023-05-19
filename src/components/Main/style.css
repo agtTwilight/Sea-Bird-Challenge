@@ -10,7 +10,7 @@
     position: relative;
     min-width: 750px;
     height: 50vh;
-    border: solid 1px black;
+    border: solid black 1px;
 }
 
 #main-buttons {
