@@ -1,3 +1,5 @@
+import backward from './assets/backward.png';
+import forward from './assets/forward.png';
 import {
     Chart as ChartJS,
     LineElement,
@@ -18,61 +20,73 @@ export const ViewData = (props) => {
     const [statsView, setStatsView] = useState(null);
     const [lineChart, setLineChart] = useState(null);
     const [buildGraphs, setBuildGraphs] = useState(false);
-    const[chartCount, setChartCount] = useState(0);
+    const [chartCount, setChartCount] = useState(0);
+    const [betweenResults, setBetweenResults] = useState(null);
 
     useEffect(() => {
         console.log(stats);
         if(stats) {
             setStatsView(
             <section id='stats-data'>
-                <p>Mean pressure: <span>{stats.mean}</span> bars</p>
-                <p>Min pressure: <span>{stats.min}</span> bars</p>
-                <p>Max pressure: <span>{stats.max}</span> bars</p>
-                <p>Sample Size: <span>{stats.isCSV ? stats.dataSeries.pressureData.length : stats.dataSeries.length}</span></p>
+                <p><strong>Mean pressure:</strong> <span>{stats.mean}</span> bars</p>
+                <p><strong>Min pressure:</strong> <span>{stats.min}</span> bars</p>
+                <p><strong>Max pressure:</strong> <span>{stats.max}</span> bars</p>
+                <p><strong>Sample Size:</strong> <span>{stats.isCSV ? stats.dataSeries.pressureData.length : stats.dataSeries.length}</span></p>
+                {
+                    betweenResults ? <p><strong>Total between({document.querySelector("#between-lower-limit").value}, {document.querySelector("#between-upper-limit").value}):</strong> <span>{betweenResults}</span> samples</p> : <></>
+                }
             </section>
             )
         }
-    }, [stats])
+    }, [stats, betweenResults])
 
     useEffect(() => {
         if(buildGraphs) {
             setLineChart(handleLineCharts());
         }
     }, [buildGraphs, chartCount])
-
+    
+    // in hindsight I would refactor this to switch case to avoid nesting if's...
     const handleMethodClick = (e) => {
+        // get value of selected user method
         const method = e.target.innerText;
         if( method === "add" ) {
+            // Execute add() method
             if( document.querySelector("#add-input").value ) {
                 // TODO render arrary
                 props.capture.add( +document.querySelector("#add-input").value);
                 props.setMethods(["add", "build_stats"]);
             }
         } else if( method === "build_stats" ) {
+            // Execute build_stats() method
             setStats(props.capture.build_stats());
             document.querySelector("#add-span").setAttribute("style", "display: none;");
             document.querySelector("#between-span").setAttribute("style", "display: block;");
+            // Display executable methods following build_stats
             if( !props.capture.isCSV ) {
                 props.setMethods(["between"]);
             } else {
                 props.setMethods(["between", "getDailyStats"]);
             }
         } else if ( method === "between" ) {
+            // Execute between() method
             if( document.querySelector("#between-lower-limit").value && document.querySelector("#between-upper-limit").value ) {
-                // TODO render results
-                console.log(stats.between( +document.querySelector("#between-lower-limit").value, +document.querySelector("#between-upper-limit").value ));
+                setBetweenResults(stats.between( +document.querySelector("#between-lower-limit").value, +document.querySelector("#between-upper-limit").value ));
             }
         } else if( method === "getDailyStats") {
+            // Execute getDailyStats() method
             document.querySelector("#stats-data").setAttribute("style", "display: none;");
             stats.getDailyStats();
             setBuildGraphs(true);
             props.setMethods(["between", "hideGraph"]);
         } else if ( method === "hideGraph" ) {
+            // Execute hideGraph function, allowing user to return to original stats page
             props.setMethods(["between", "showGraph"]);
             document.querySelector("#stats-data").setAttribute("style", "display: block;");
             document.querySelector("#chart").setAttribute("style", "display: none;");
         } else {
             props.setMethods(["between", "hideGraph"]);
+            // Execute showGraph function, allowing user to return to graph view
             document.querySelector("#stats-data").setAttribute("style", "display: none;");
             document.querySelector("#chart").setAttribute("style", "display: block;");
         }
@@ -119,8 +133,9 @@ export const ViewData = (props) => {
 
         return <section id='chart'>
             <section>
-                <p id='backward' onClick={chartBackward}>back</p>
-                <p id='forward' onClick={chartForward}>forward</p>
+                <img id='backward' onClick={chartBackward} src={backward} alt='a backward arrow'></img>
+                <p>Chart Num: {chartCount}</p>
+                <img id='forward' onClick={chartForward} src={forward} alt='a forward arrow'></img>
             </section>
             <Line
         data = {data}

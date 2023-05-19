@@ -24,7 +24,12 @@
     justify-content: space-evenly;
 }
 
-#chart p:hover {
+#chart img {
+    height: 3rem;
+    width: 3rem;
+}
+
+#chart img:hover {
     cursor: pointer;
 }
 
