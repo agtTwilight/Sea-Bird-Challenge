@@ -1,7 +1,5 @@
 import DataSeriesCapture from '../../utils/DataSeriesCapture';
-import React, 
-    { useState, 
-    useEffect } from 'react';
+import React, { useState } from 'react';
 import ViewData from '../ViewData';
 import './style.css';
 
