@@ -1,70 +1,88 @@
-# Getting Started with Create React App
+# Data-Series-Capture
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Deployed Link: 
 
-## Available Scripts
+## Description
+Requirements: 
+- Create a DataSeriesCapture object that allows users to build small data series, OR, ingests pressure data from a CSV file.
+- With either data set, be able to return basic statistics from the data (should execute at O(n)).
+- In the basic statistics, include a function--between( x, y)--that can tell the user how many data points are between x and y (inclusive).
+- For pressure data, identify a way to analyze pressure distribution.
 
-In the project directory, you can run:
+My Approach:
+- Create two classes, [`DataSeriesCapture`](dataseriescapture) and [`Stats`](stats), to house all required functions and data.
+- To gather statistical information at BigO(n), mean, min and max, were selected to be the basics statistics of choice, as all could easily be gathered during one loop of the data.
+- `between()` was easily implemented in the `Stats` class
+- To analyze pressure data, an optional method `getDailyStats()` was included in the `Stats` class. When invoked, this method buckets pressure data by day, executes basic statistics on these bucketed data sets, and calculates a standard deviation for each day as well. Additionally, a React front-end was created for this project to include data visualization via `Chart.js`.
 
-### `npm start`
+## Table of Contents
+- [Installation](#installation)
+- [DataSeriesCapture](#dataseriescapture)
+- [Stats](#stats)
+- [Usage](#usage)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Installation
+Since this program was made with a React front-end, any user can interact with it independent of coding experience. However, this installation guide will be for those interested in running the application strictly with `node.js`. Visit the [Usage](#usage) section for more details on the front-end user experience.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+**Note: React doesn't all the `fs` package. To run the program in Node.js, you will need to load into an old branch.**
 
-### `npm test`
+ADD LINK HERE
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Cloning the repository:
+1. Navigate to the github repo (linked above).
+2. Select the `Code` button above the file display section.
+3. Select `SSH` and copy the link.
+4. Open your terminal in the directory you wish to clone the files into.
+5. Run the following command: `git clone <insert-sshkey-here>`.
 
-### `npm run build`
+Working with Node.js:
+1. Run the following command to load the correct branch: `git checkout -b dataSeriesCapture/Stats`.
+2. Install package dependencies with the following command: `npm i`.
+3. To run Jest tests execute the following: `npm run test`. Note that `--watchall` and `--verbose` are enabled with the dev dependency, so you will have to exit your terminal and hit `Ctrl + C`.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Navigate the test and source code files. Creating new tests is encouraged!
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## DataSeriesCapture
+A class was choosen in part due to the pseudo codes structure, but more importantly because they serve as excellent frameworks for creating new objects (one of the requirements was that it be an object).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+`constructor(isCSV) ...` :
 
-### `npm run eject`
+Each new instance of a DataSeriesCapture initializes and undefined `dataSeris`, and an `isCSV` bool. 
+- Since this project was coupled with a front-end, the user is restricted to only being able to upload files of type .csv, should they choose to upload a file. Throughout the functions within DataSeriesCapture, the `isCSV` bool is critical for deciding how particular functions should be executed.
+- `dataSeries` is initialized as undefined because of how I elected to store data in the event that a user uploads a CSV. More on this below...
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+`read_pressure_from_csv()` & `toJson()` :
+- Some--albeit minor--[research](https://leanylabs.com/blog/js-csv-parsers-benchmarks/) suggests `PapaParse` is the most efficient CSV to JSON npm package. I haven't worked with many CSV parsing packages before, but I elected to go with `PapaParse` from the limited amount of time spent researching packages.
+- `read_pressure_from_csv` awaits a promise from `toJson`. The promise returns an object housing pressure CSV data in the following formats:
+    1. An array of all pressure data (to simplify query statistics and `between()` execution).
+    2. An object containing each day as a key, and an array of pressure data for each day stored as their value.
+...the object stores data as "pressureData", and "dailyData", respectively.
+- To minimize the need of loops, I decided storing both pressure and daily data during the same loop event would be the most efficient use of time. I wanted to store daily data in this way because I thought it would be a welcome addition during data analysis.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+`build_stats()` :
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+It was requested that no library should be imported to build stats instantly, get stats should be processed at BigO(n). Additionally, the required stats to be gathered were left ambiguous.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+I decided to collect mean, min, and max data during function execution. Since each of these pieces of data requires a loop of O(n) to calculate, I was able to calculate them in one loop to prevent the need of additional loops. Additional stats could be calculated within this function if desired, but I felt like mean, min, and max gave a good overview of the pressure data provided.
 
-## Learn More
+I did however, included additional statistical analysis in the [`Stats class`](#stats).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+`add(num)` :
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Add was made in the event that a user decideds to create their own dataSeries. In that event, dataSeries will be set to an array, and each call to add() will push the value to the end of the array.
 
-### Code Splitting
+## Stats
+The stats class houses the data generated by `build_stats`, as well as the `between()` and `getDailyStats` function.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+`between( x, y )` :
+This function was made to allow the user to identify how many data points lie between two values, x and y, inclusive. In the front end, the count is returned and rendered to the stats display.
 
-### Analyzing the Bundle Size
+`getDailyStats()` :
+This function takes dailyData and calculates mean, min, max, and standard deviation for each day. I made this function to add bonus functionality to the front-end, allowing users to see daily pressure data displayed via `Chart.js`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Usage
+Depolyed application: 
 
-### Making a Progressive Web App
+[Watch the video!](https://drive.google.com/file/d/1JTcSZ4TpukONYWBDG7QsC033rvTJEF47/view?usp=sharing)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Note: the front-end application has not been optimized for mobile...the `view data` component has locked width elements. Styling can be added in the future.**

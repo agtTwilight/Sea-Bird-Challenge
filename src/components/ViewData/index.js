@@ -24,7 +24,6 @@ export const ViewData = (props) => {
     const [betweenResults, setBetweenResults] = useState(null);
 
     useEffect(() => {
-        console.log(stats);
         if(stats) {
             setStatsView(
             <section id='stats-data'>
@@ -122,7 +121,6 @@ export const ViewData = (props) => {
             ]
         };
 
-        console.log(data)
         const titleTooltip = (tooltipItems) => {
             return `mean: ${stats.dataSeries.dailyStats[keys[tooltipItems[0].dataIndex]].mean}`;
         }

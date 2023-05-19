@@ -43,7 +43,6 @@ class DataSeriesCapture {
             if( max < data[i] ) max = data[i];
             sum += data[i];
         }
-        console.log(sum, data.length)
         const mean = sum/data.length;
         const stats = new Stats(this.dataSeries, this.isCSV, mean, min, max);
         return stats;

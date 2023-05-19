@@ -10,12 +10,6 @@ export const Main = () => {
     const [methods, setMethods] = useState([]);
     const [visibility, setVisiblity] = useState("visible");
 
-    // render executables for appropriate DataSeriesCapture
-    useEffect(() => {
-        console.log(capture)
-        console.log(methods)
-    }, [capture, methods])
-
     // initialize none csv DataSeriesCapture
     const handleCustomData = () => {
         setCapture(new DataSeriesCapture(false));
