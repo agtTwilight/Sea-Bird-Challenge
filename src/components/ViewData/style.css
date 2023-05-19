@@ -1,0 +1,86 @@
+#view-data input {
+    position: relative;
+    max-width: 30px;
+}
+
+#add-notification {
+    position: absolute;
+    margin-left: 1rem;
+}
+
+#stats-data {
+    position: absolute;
+    margin-left: 1rem;
+    text-align: left;
+    width: 600px;
+}
+
+#chart {
+    position: absolute;
+    bottom: 1rem;
+    box-sizing: border-box; 
+    height: fit-content;
+    width: 600px;
+    z-index: 2;
+}
+
+#chart section {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#chart img {
+    height: 3rem;
+    width: 3rem;
+}
+
+#chart img:hover {
+    cursor: pointer;
+}
+
+#executable-methods {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
+    border-left: solid black;
+    height: 100%;
+    width: 150px;
+    right: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#executable-methods li {
+    border: solid grey;
+    padding: 0.3rem;
+    border-radius: 0.5rem;
+    background-color: darkgrey;
+    transition: 0.1s ease-in-out;
+    margin: 1rem 0;
+}
+
+#executable-methods li:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+#add-span {
+    display: none;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100px;
+    margin: 5px;
+}
+
+#between-span {
+    display: none;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100px;
+    margin: 5px;
+}
