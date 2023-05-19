@@ -50,15 +50,15 @@ export const ViewData = (props) => {
     const handleMethodClick = (e) => {
         // get value of selected user method
         const method = e.target.innerText;
+        // Execute add() method
         if( method === "add" ) {
-            // Execute add() method
             if( document.querySelector("#add-input").value ) {
                 // TODO render arrary
                 props.capture.add( +document.querySelector("#add-input").value);
                 props.setMethods(["add", "build_stats"]);
             }
+        // Execute build_stats() method
         } else if( method === "build_stats" ) {
-            // Execute build_stats() method
             setStats(props.capture.build_stats());
             document.querySelector("#add-span").setAttribute("style", "display: none;");
             document.querySelector("#between-span").setAttribute("style", "display: block;");
@@ -69,25 +69,25 @@ export const ViewData = (props) => {
             } else {
                 props.setMethods(["between", "getDailyStats"]);
             }
+        // Execute between() method
         } else if ( method === "between" ) {
-            // Execute between() method
             if( document.querySelector("#between-lower-limit").value && document.querySelector("#between-upper-limit").value ) {
                 setBetweenResults(stats.between( +document.querySelector("#between-lower-limit").value, +document.querySelector("#between-upper-limit").value ));
             }
+        // Execute getDailyStats() method
         } else if( method === "getDailyStats") {
-            // Execute getDailyStats() method
             document.querySelector("#stats-data").setAttribute("style", "display: none;");
             stats.getDailyStats();
             setBuildGraphs(true);
             props.setMethods(["between", "hideGraph"]);
+        // Execute hideGraph function, allowing user to return to original stats page
         } else if ( method === "hideGraph" ) {
-            // Execute hideGraph function, allowing user to return to original stats page
             props.setMethods(["between", "showGraph"]);
             document.querySelector("#stats-data").setAttribute("style", "display: block;");
             document.querySelector("#chart").setAttribute("style", "display: none;");
+        // Execute showGraph function, allowing user to return to graph view
         } else {
             props.setMethods(["between", "hideGraph"]);
-            // Execute showGraph function, allowing user to return to graph view
             document.querySelector("#stats-data").setAttribute("style", "display: none;");
             document.querySelector("#chart").setAttribute("style", "display: block;");
         }
@@ -106,6 +106,7 @@ export const ViewData = (props) => {
         let keys = Object.keys(stats.dataSeries.dailyStats);
         keys = keys.slice(0+ (chartCount*7) ,7 + (chartCount*7))
 
+        // Chart.js configuration:
         const data = {
             labels: keys,
             datasets: [
@@ -122,12 +123,39 @@ export const ViewData = (props) => {
         };
 
         console.log(data)
+        const titleTooltip = (tooltipItems) => {
+            return `mean: ${stats.dataSeries.dailyStats[keys[tooltipItems[0].dataIndex]].mean}`;
+        }
+
+        const bodyTooltip = (tooltipItems) => {
+            return `stdev: ${stats.dataSeries.dailyStats[keys[tooltipItems.dataIndex]].stdev}; min: ${stats.dataSeries.dailyStats[keys[tooltipItems.dataIndex]].min}; max: ${stats.dataSeries.dailyStats[keys[tooltipItems.dataIndex]].max}
+            `;
+        }
 
         const options = {
             scales: {
                 y: {
                     min: -200,
                     max: 1800,
+                    title: {
+                        display: true,
+                        text: "pressure (bars)"
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "date"
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    displayColors: false,
+                    callbacks: {
+                        title: titleTooltip,
+                        label: bodyTooltip,
+                    }
                 }
             }
         }
