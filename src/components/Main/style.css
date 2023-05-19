@@ -17,7 +17,7 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    transform: translateX(50%) translateY(150%);
+    transform:  translateY(150%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,13 +27,4 @@
     margin-right: 2rem;
     max-height: 25px;
     width: fit-content;
-}
-
-#uploads {
-    display: flex;
-    flex-direction: column;
-}
-
-#uploads button {
-    margin-top: 1rem;
 }

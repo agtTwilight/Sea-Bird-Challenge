@@ -28,9 +28,9 @@ export const ViewData = (props) => {
         if(stats) {
             setStatsView(
             <section id='stats-data'>
-                <p><strong>Mean pressure:</strong> <span>{stats.mean}</span> bars</p>
-                <p><strong>Min pressure:</strong> <span>{stats.min}</span> bars</p>
-                <p><strong>Max pressure:</strong> <span>{stats.max}</span> bars</p>
+                <p><strong>Mean pressure:</strong> <span>{stats.mean}</span> bar(s)</p>
+                <p><strong>Min pressure:</strong> <span>{stats.min}</span> bar(s)</p>
+                <p><strong>Max pressure:</strong> <span>{stats.max}</span> bar(s)</p>
                 <p><strong>Sample Size:</strong> <span>{stats.isCSV ? stats.dataSeries.pressureData.length : stats.dataSeries.length}</span></p>
                 {
                     betweenResults ? <p><strong>Total between({document.querySelector("#between-lower-limit").value}, {document.querySelector("#between-upper-limit").value}):</strong> <span>{betweenResults}</span> samples</p> : <></>
@@ -65,6 +65,7 @@ export const ViewData = (props) => {
             // Display executable methods following build_stats
             if( !props.capture.isCSV ) {
                 props.setMethods(["between"]);
+                document.querySelector("#add-notification").setAttribute("style", "display: none;");
             } else {
                 props.setMethods(["between", "getDailyStats"]);
             }
@@ -155,6 +156,15 @@ export const ViewData = (props) => {
 
   return (
     <div id='view-data'>
+        {
+            props.capture !== null
+            ? props.capture.isCSV 
+            ? <></> 
+            : props.capture.dataSeries !== undefined 
+            ? <p id='add-notification'>Successfully added {document.querySelector("#add-input").value} to the data series.</p>
+            : <></>
+            : <></>
+        }
         {
             buildGraphs ? lineChart : <></>
         }

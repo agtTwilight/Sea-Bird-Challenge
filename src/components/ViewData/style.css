@@ -3,6 +3,11 @@
     max-width: 30px;
 }
 
+#add-notification {
+    position: absolute;
+    margin-left: 1rem;
+}
+
 #stats-data {
     position: absolute;
     margin-left: 1rem;
