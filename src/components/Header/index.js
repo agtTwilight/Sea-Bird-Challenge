@@ -6,7 +6,7 @@ export const Header = () => {
   return (
     <header>
         <p>Sea-Bird Scientific</p>
-        <img id='help' src={question} alt='a question mark for tutorial info'></img>
+        <a href='https://github.com/agtTwilight/Sea-Bird-Challenge#readme'><img id='help' src={question} alt='a question mark for tutorial info'></img></a>
     </header>
   )
 }

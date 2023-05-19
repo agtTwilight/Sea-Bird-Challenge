@@ -1,6 +1,8 @@
 const DataSeriesCapture = require('./DataSeriesCapture.js');
 const filepath = './src/data/test.csv';
 
+// DEPRICATED: will not run in react app because fs module not supported. See README for proper branch for testing.
+
 describe('DataSeriesCapture', () => {
     let capture;
 
