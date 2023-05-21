@@ -52,7 +52,6 @@ export const ViewData = (props) => {
         // Execute add() method
         if( method === "add" ) {
             if( document.querySelector("#add-input").value ) {
-                // TODO render arrary
                 props.capture.add( +document.querySelector("#add-input").value);
                 props.setMethods(["add", "build_stats"]);
             }
